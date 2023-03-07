@@ -1,6 +1,6 @@
 <template>
   <div>
-    <live2d></live2d>
+    <live2d ></live2d>
   </div>
 </template>
 
