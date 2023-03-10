@@ -1,5 +1,7 @@
+import {ipcRenderer} from "electron";
 import * as PIXI from 'pixi.js'
 import  { Live2DModel } from "pixi-live2d-display";
+
 
 window.PIXI = PIXI
 
@@ -14,10 +16,10 @@ export async function main() {
         resizeTo: window
     })
 
-    const model = await Live2DModel.from('model/shizuku/shizuku.model.json')
+   const model = await Live2DModel.from('model/shizuku/shizuku.model.json')
 
-    const scaleX = (innerWidth * 0.4) / model.width;
-    const scaleY = (innerHeight * 0.8) / model.height;
+    const scaleX = (innerWidth * 0.2) / model.width;
+    const scaleY = (innerHeight * 0.4) / model.height;
 
     model.scale.set(Math.min(scaleX, scaleY));
 
@@ -33,7 +35,8 @@ export async function main() {
             model.expression();
         }
     })
-
+    model.on('pointerover', onModelOver)
+    model.on('pointerout', onModelOut)
     app.stage.addChild(model)
 }
 
@@ -52,4 +55,16 @@ function draggable(model) {
     });
     model.on("pointerupoutside", () => (model.dragging = false));
     model.on("pointerup", () => (model.dragging = false));
+}
+
+function onModelOver() {
+    this.isOver = true;
+    console.log("经过模型")
+    ipcRenderer.send('set-ignore-mouse-events', false)
+}
+
+function onModelOut() {
+    this.isOver = false;
+    console.log("离开模型")
+    ipcRenderer.send('set-ignore-mouse-events', true, { forward: true })
 }

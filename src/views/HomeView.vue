@@ -1,6 +1,7 @@
 <template>
   <div>
-    <live2d ></live2d>
+    <div id="test" style="height: 50px"></div>
+    <live2d></live2d>
   </div>
 </template>
 
@@ -15,3 +16,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+</style>

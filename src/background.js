@@ -1,7 +1,7 @@
 'use strict'
 
 
-import {app, protocol, BrowserWindow, screen, } from 'electron'
+import { app, protocol, BrowserWindow, screen, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -13,31 +13,21 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 async function createWindow() {
-
-
   // Create the browser window.
   const win = new BrowserWindow({
     // x: screen.getPrimaryDisplay().workAreaSize.width - 450,
     // y: screen.getPrimaryDisplay().workAreaSize.height - 450,
-    fullscreen: true,
     frame: false,
     transparent: true,
-    alwaysOnTop: true,
-
+    fullscreen: true,
     webPreferences: {
+      // preload:'./preload.js',
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
-
-
-
-  // win.once('ready-to-show', () => {
-  //   win.show()
-  // })
-  // win.setIgnoreMouseEvents(true)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -48,6 +38,12 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+  win.setAlwaysOnTop(true, 'pop-up-menu')
+
+  ipcMain.on('set-ignore-mouse-events', (event, ...args) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    win.setIgnoreMouseEvents(...args)
+  })
 }
 
 // Quit when all windows are closed.
@@ -77,7 +73,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+  await createWindow()
 })
 
 // Exit cleanly on request from parent process in development mode.
