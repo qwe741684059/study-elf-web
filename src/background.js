@@ -1,10 +1,30 @@
 'use strict'
 
 
-import { app, protocol, BrowserWindow, screen, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, screen, ipcMain, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+// 菜单模板
+const menuTemplate = [
+  {
+    label: '全选',
+    role: 'selectAll'
+  },
+  {
+    label: '剪贴',
+    role: 'cut'
+  },
+  {
+    label: '复制',
+    role: 'copy'
+  },
+  {
+    label: '粘贴',
+    role: 'paste'
+  }
+];
 
 
 // Scheme must be registered before the app is ready
@@ -19,7 +39,7 @@ async function createWindow() {
     // y: screen.getPrimaryDisplay().workAreaSize.height - 450,
     frame: false,
     transparent: true,
-    fullscreen: true,
+    // fullscreen: true,
     webPreferences: {
       // preload:'./preload.js',
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -43,6 +63,12 @@ async function createWindow() {
   ipcMain.on('set-ignore-mouse-events', (event, ...args) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     win.setIgnoreMouseEvents(...args)
+  })
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  ipcMain.on('menu', (ev, arg) => {
+    menu.popup({
+      window: win
+    });
   })
 }
 

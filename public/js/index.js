@@ -37,34 +37,40 @@ export async function main() {
     })
     model.on('pointerover', onModelOver)
     model.on('pointerout', onModelOut)
+    model.on("rightclick", onModelRightClick)
     app.stage.addChild(model)
 }
 
 function draggable(model) {
     model.buttonMode = true;
-    model.on("pointerdown", (e) => {
+    model.on("mousedown", (e) => {
         model.dragging = true;
         model._pointerX = e.data.global.x - model.x;
         model._pointerY = e.data.global.y - model.y;
     });
-    model.on("pointermove", (e) => {
+    model.on("mousemove", (e) => {
         if (model.dragging) {
             model.position.x = e.data.global.x - model._pointerX;
             model.position.y = e.data.global.y - model._pointerY;
         }
     });
-    model.on("pointerupoutside", () => (model.dragging = false));
-    model.on("pointerup", () => (model.dragging = false));
+    model.on("mouseoutside", () => (model.dragging = false));
+    model.on("mouseup", () => (model.dragging = false));
+
 }
 
 function onModelOver() {
     this.isOver = true;
     console.log("经过模型")
-    ipcRenderer.send('set-ignore-mouse-events', false)
+    // ipcRenderer.send('set-ignore-mouse-events', false)
 }
 
 function onModelOut() {
     this.isOver = false;
     console.log("离开模型")
-    ipcRenderer.send('set-ignore-mouse-events', true, { forward: true })
+    // ipcRenderer.send('set-ignore-mouse-events', true, { forward: true })
+}
+
+function onModelRightClick() {
+    ipcRenderer.send('menu')
 }
