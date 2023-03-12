@@ -1,16 +1,19 @@
 'use strict'
 
-
+import path from 'path'
 import { app, protocol, BrowserWindow, screen, ipcMain, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import {openMainControl} from "@/utils/menuUtil";
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+export let win = null
 
 // 菜单模板
 const menuTemplate = [
   {
-    label: '全选',
-    role: 'selectAll'
+    label: '主面板',
+    click: openMainControl
   },
   {
     label: '剪贴',
@@ -34,14 +37,14 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     // x: screen.getPrimaryDisplay().workAreaSize.width - 450,
     // y: screen.getPrimaryDisplay().workAreaSize.height - 450,
     frame: false,
     transparent: true,
     // fullscreen: true,
     webPreferences: {
-      // preload:'./preload.js',
+      preload:path.join(__dirname, 'preload.js'),
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
@@ -56,7 +59,7 @@ async function createWindow() {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    await win.loadURL('app://./index.html')
   }
   win.setAlwaysOnTop(true, 'pop-up-menu')
 
@@ -72,6 +75,7 @@ async function createWindow() {
   })
 }
 
+
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -85,6 +89,7 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
+
 })
 
 // This method will be called when Electron has finished
