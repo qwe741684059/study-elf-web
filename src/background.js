@@ -38,11 +38,9 @@ protocol.registerSchemesAsPrivileged([
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    // x: screen.getPrimaryDisplay().workAreaSize.width - 450,
-    // y: screen.getPrimaryDisplay().workAreaSize.height - 450,
     frame: false,
     transparent: true,
-    // fullscreen: true,
+    fullscreen: true,
     webPreferences: {
       preload:path.join(__dirname, 'preload.js'),
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -55,13 +53,13 @@ async function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     await win.loadURL('app://./index.html')
   }
-  win.setAlwaysOnTop(true, 'pop-up-menu')
+  // win.setAlwaysOnTop(true, 'pop-up-menu')
 
   ipcMain.on('set-ignore-mouse-events', (event, ...args) => {
     const win = BrowserWindow.fromWebContents(event.sender)

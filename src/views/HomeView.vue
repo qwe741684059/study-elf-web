@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div id="test" style="height: 50px"></div>
     <live2d></live2d>
   </div>
 </template>

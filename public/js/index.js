@@ -62,13 +62,13 @@ function draggable(model) {
 function onModelOver() {
     this.isOver = true;
     console.log("经过模型")
-    // window.ipcRenderer.send('set-ignore-mouse-events', false)
+    window.ipcRenderer.send('set-ignore-mouse-events', false)
 }
 
 function onModelOut() {
     this.isOver = false;
     console.log("离开模型")
-    // window.ipcRenderer.send('set-ignore-mouse-events', true, { forward: true })
+    window.ipcRenderer.send('set-ignore-mouse-events', true, { forward: true })
 }
 
 function onModelRightClick() {
