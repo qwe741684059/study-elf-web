@@ -7,6 +7,21 @@
     font-size: 12px;
     width:40px !important;
 }
+.Courses-leftHand .left-hand-index {
+    color:#9c9c9c;
+    margin-bottom: 4px !important;
+}
+.Courses-leftHand .left-hand-name {
+    color: #666
+}
+.Courses-leftHand p {
+    text-align: center;
+    font-weight: 900;
+}
+.Courses-leftHand > div {
+    padding-top: 5px;
+    border-bottom: 1px dashed rgb(219, 219, 219)
+}
 .left-hand-TextDom {
     height: 30px !important;
 }
@@ -18,4 +33,26 @@
 }
 #courseWrapper {
     padding-left: 40px !important;
+}
+.Courses-content > ul {
+    border-bottom: 1px dashed rgb(219, 219, 219);
+    box-sizing: border-box;
+}
+.Courses-content li {
+    text-align: center;
+    color: #666666;
+    font-size: 14px;
+    line-height: 50px;
+}
+.Courses-content li span {
+    padding: 6px 2px;
+    box-sizing: border-box;
+    line-height: 18px;
+    border-radius: 4px;
+    white-space: normal;
+    word-break: break-all;
+    cursor: pointer;
+}
+.highlight-week {
+    color: #02a9f5 !important;
 }
