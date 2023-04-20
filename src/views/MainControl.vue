@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-aside width="300px">
-        <el-menu default-active="1" background-color="#F5F5F5"  @select="onSelect">
+        <el-menu :default-active="index" background-color="#F5F5F5"  @select="onSelect">
           <el-menu-item index="1">
             <span>笔记管理</span>
           </el-menu-item>
@@ -16,15 +16,16 @@
             <span>备忘录</span>
           </el-menu-item>
           <div class="placeholder"></div>
-          <el-menu-item index="login">
+          <el-menu-item index="5">
             <div class="avatar-wrapper">
-              <el-avatar class="avatar-icon" :size="40"  src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></el-avatar>
-              <span class="avatar-text">username</span>
+              <el-avatar class="avatar-icon" :size="40"  :src="user != null ? user.avatar: defaultAvatar"></el-avatar>
+              <span class="avatar-text">{{user != null ? user.username : "username"}}</span>
             </div>
           </el-menu-item>
         </el-menu>
       </el-aside>
       <el-main >
+        <!-- 右上角关闭图标 -->
         <div>
           <el-button class="close" icon="Close" @click="clickClose" text ></el-button>
         </div>
@@ -36,22 +37,44 @@
         <div v-if="index === '3'" key="3">
           <time-tables></time-tables>
         </div>
+
+        <!-- 登录模块 -->
+        <div v-if="index === '5' && !isLogin" >
+          <div class="login-form-wrapper">
+            <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
+              <p class="login-form-title">Study-Elf 登录</p>
+              <el-form-item prop="username" class="login-form-input">
+                <el-input v-model="loginForm.username" placeholder="账号"></el-input>
+              </el-form-item>
+              <el-form-item prop="password" class="login-form-input">
+                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>
+              </el-form-item>
+              <el-form-item class="login-form-button">
+                <el-button @click="isRegister = true" type="info">注册</el-button>
+                <el-button type="primary" @click="handleLogin" :loading="loading">
+                  <span v-if="!loading">登 录</span>
+                  <span v-else>登 录 中...</span>
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
       </el-main>
 
-      <el-dialog v-model="isLoginMenuPopUp" title="用户登录" width="30%">
-        <el-form :model="loginForm" ref="loginForm" label-position="right" label-width="70">
-          <el-form-item label="用户名" prop="username">
-            <el-input v-model="loginForm.username"></el-input>
+      <!-- 注册弹出模块 -->
+      <el-dialog v-model="isRegister" title="用户注册" width="30%" >
+        <el-form :model="registerForm" ref="registerForm" :rules="rules">
+          <el-form-item label="用户名" prop="username" label-width="70px">
+            <el-input v-model="registerForm.username"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="loginForm.password"></el-input>
+          <el-form-item label="密码" prop="password" label-width="70px">
+            <el-input type="password" v-model="registerForm.password" show-password></el-input>
           </el-form-item>
         </el-form>
 
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="isLoginMenuPopUp = false" size="small">注册</el-button>
-            <el-button type="primary" @click="isLoginMenuPopUp = false">登录</el-button>
+            <el-button @click="handleRegister" size="small" :loading="loading">注册</el-button>
           </span>
         </template>
       </el-dialog>
@@ -62,6 +85,11 @@
 <script>
 import TimeTables from "@/components/TimeTables";
 import FileList from "@/components/FileList";
+import Config from "@/settings"
+import {getToken} from "@/utils/auth";
+import {mapState} from "vuex";
+import {register} from "@/api/user";
+import Cookies from "js-cookie";
 
 export default {
   name: "MainControl",
@@ -69,33 +97,86 @@ export default {
     TimeTables,
     FileList
   },
+  computed: {
+    ...mapState(["user"])
+  },
   data() {
     return {
+      defaultAvatar : "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       index: "1",
-      isLoginMenuPopUp: false,
+      isRegister: false,
       loginForm:{
         username: '',
         password: '',
       },
+      registerForm: {
+        username: '',
+        password: '',
+      },
       rules: {
-
-      }
+        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
+        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
+      },
+      loading:false,
+      isLogin:false,
     }
   },
   created() {
-
+    const _this = this
+    if (getToken()) {
+      _this.$store.dispatch('GetInfo').then(function (resp) {
+        _this.isLogin = true
+      })
+    } else {
+      _this.index = "5"
+    }
   },
   mounted() {
   },
   methods: {
     onSelect(index) {
       this.index = index
-      if (index === 'login') {
-        this.isLoginMenuPopUp = true
+      const _this = this
+      if (getToken()) {
+        _this.$store.dispatch('GetInfo').then(function (resp) {
+          _this.isLogin = true
+        })
+      } else {
+        _this.index = "5"
       }
+
     },
     clickClose() {
       window.ipcRenderer.send('close-main-control')
+    },
+    handleLogin() {
+      const _this = this
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          _this.$store.dispatch('Login', this.loginForm).then((resp) => {
+            Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
+            Cookies.set('password', this.loginForm.password, { expires: Config.tokenCookieExpires })
+            this.loading = false
+            _this.isLogin = true
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          console.log("error submit")
+          return false
+        }
+      })
+    },
+    handleRegister() {
+      const _this = this
+      const user = {
+        username: _this.registerForm.username,
+        password: _this.registerForm.password
+      }
+      register(user).then(function (resp) {
+        _this.isRegister = false
+      })
     },
 
   }
@@ -132,4 +213,25 @@ export default {
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
+
+.login-form {
+  border-radius: 6px;
+  padding: 25px 25px 5px 25px;
+  position: relative;
+  width: 385px;
+  left: 30%;
+  top: 200px;
+  background-color: #eeeeee;
+}
+.login-form-button {
+  position: relative;
+  left: 30%;
+}
+.login-form-title {
+  margin: 0 auto 30px auto;
+  color: #707070;
+  text-align: center;
+  font-size: 24px;
+}
+
 </style>

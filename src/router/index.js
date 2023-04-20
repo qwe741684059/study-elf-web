@@ -1,7 +1,6 @@
 import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
-
 const routes = [
   {
     path: '/',
@@ -11,7 +10,7 @@ const routes = [
   {
     path: '/mainControl/:filePath*',
     component: () => import('@/views/MainControl')
-  }
+  },
 ]
 
 const router = createRouter({
