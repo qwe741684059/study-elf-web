@@ -9,10 +9,9 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/mainControl',
-    name: 'MainControl',
+    path: '/mainControl/:filePath*',
     component: () => import('@/views/MainControl')
-  },
+  }
 ]
 
 const router = createRouter({

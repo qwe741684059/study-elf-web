@@ -65,6 +65,7 @@ async function createWindow() {
     const win = BrowserWindow.fromWebContents(event.sender)
     win.setIgnoreMouseEvents(...args)
   })
+
   const menu = Menu.buildFromTemplate(menuTemplate);
   ipcMain.on('menu', (ev, arg) => {
     menu.popup({
