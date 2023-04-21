@@ -9,6 +9,7 @@ import '@/assets/css/global.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 
+
 const app = createApp(App)
 
 app.use(store).use(router).use(ElementPlus).mount('#app')

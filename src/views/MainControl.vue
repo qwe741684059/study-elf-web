@@ -29,36 +29,74 @@
         <div>
           <el-button class="close" icon="Close" @click="clickClose" text ></el-button>
         </div>
+        <div v-if="isLogin">
+
+        </div>
 
         <div v-if="index === '1'" key="1">
-          <file-list></file-list>
+          <el-card style="height: 750px; overflow: auto">
+            <file-list></file-list>
+          </el-card>
         </div>
 
         <div v-if="index === '3'" key="3">
           <time-tables></time-tables>
         </div>
 
-        <!-- 登录模块 -->
-        <div v-if="index === '5' && !isLogin" >
-          <div class="login-form-wrapper">
-            <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
-              <p class="login-form-title">Study-Elf 登录</p>
-              <el-form-item prop="username" class="login-form-input">
-                <el-input v-model="loginForm.username" placeholder="账号"></el-input>
-              </el-form-item>
-              <el-form-item prop="password" class="login-form-input">
-                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>
-              </el-form-item>
-              <el-form-item class="login-form-button">
-                <el-button @click="isRegister = true" type="info">注册</el-button>
-                <el-button type="primary" @click="handleLogin" :loading="loading">
-                  <span v-if="!loading">登 录</span>
-                  <span v-else>登 录 中...</span>
-                </el-button>
-              </el-form-item>
-            </el-form>
-          </div>
+        <div v-if="index === '5'" key="5">
+          <el-card style="width: 300px;" class="user-detail">
+            <template #header>
+              <div class="user-detail-header">
+                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="60"></el-avatar>
+                <span class="user-detail-header-text">username</span>
+              </div>
+
+            </template>
+            <el-descriptions border column="1">
+              <el-descriptions-item label="用户名">
+                心随风飘扬
+              </el-descriptions-item>
+              <el-descriptions-item label="密码">
+                <span type="password">************</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="创建时间">
+                <span type="password">2022-2-22</span>
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-button type="primary" class="edit-button">编辑</el-button>
+          </el-card>
+
+          <el-card class="calender">
+            <el-calendar>
+              <template #date-cell="{data}">
+              </template>
+            </el-calendar>
+          </el-card>
+
+
         </div>
+
+<!--        &lt;!&ndash; 登录模块 &ndash;&gt;-->
+<!--        <div v-if="index === '5' && !isLogin" >-->
+<!--          <div class="login-form-wrapper">-->
+<!--            <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">-->
+<!--              <p class="login-form-title">Study-Elf 登录</p>-->
+<!--              <el-form-item prop="username" class="login-form-input">-->
+<!--                <el-input v-model="loginForm.username" placeholder="账号"></el-input>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item prop="password" class="login-form-input">-->
+<!--                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item class="login-form-button">-->
+<!--                <el-button @click="isRegister = true" type="info">注册</el-button>-->
+<!--                <el-button type="primary" @click="handleLogin" :loading="loading">-->
+<!--                  <span v-if="!loading">登 录</span>-->
+<!--                  <span v-else>登 录 中...</span>-->
+<!--                </el-button>-->
+<!--              </el-form-item>-->
+<!--            </el-form>-->
+<!--          </div>-->
+<!--        </div>-->
       </el-main>
 
       <!-- 注册弹出模块 -->
@@ -91,11 +129,12 @@ import {mapState} from "vuex";
 import {register} from "@/api/user";
 import Cookies from "js-cookie";
 
+
 export default {
   name: "MainControl",
   components:{
     TimeTables,
-    FileList
+    FileList,
   },
   computed: {
     ...mapState(["user"])
@@ -142,7 +181,7 @@ export default {
           _this.isLogin = true
         })
       } else {
-        _this.index = "5"
+        // _this.index = "5"
       }
 
     },
@@ -233,5 +272,27 @@ export default {
   text-align: center;
   font-size: 24px;
 }
+.edit-button {
+  margin-top: 10px;
+  width: 100%;
+}
+.user-detail {
+  position: relative;
+  left: 73%;
+}
+.calender {
+  width: 800px;
+  position: relative;
+  bottom: 305px;
+}
+.user-detail-header-text {
+  position: relative;
+  margin-left: 20px;
+  color: #707070;
+  bottom: 10px;
+  font-size: 18px;
+}
+
+
 
 </style>
