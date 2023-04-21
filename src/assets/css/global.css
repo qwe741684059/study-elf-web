@@ -2,3 +2,16 @@ html, body {
     margin: 0;
     height: 100%;
 }
+
+.avatar-uploader .el-upload {
+
+    border: 1px dashed var(--el-border-color)!important;
+    border-radius: 178px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast)
+}
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}

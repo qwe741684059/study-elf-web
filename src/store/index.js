@@ -4,10 +4,11 @@ import {getInfo, login, logout} from "@/api/user";
 
 export default createStore({
   state: {
-    user: null,
+    user: {},
     token: getToken()
   },
   getters: {
+    user: state => state.user
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -23,7 +24,6 @@ export default createStore({
         setToken(resp.data.token)
         commit('SET_TOKEN', resp.data.token)
         commit('SET_USER', resp.data.user)
-        return resp
       }).catch(e => {
         logOut(commit)
       })

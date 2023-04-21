@@ -18,8 +18,8 @@
           <div class="placeholder"></div>
           <el-menu-item index="5">
             <div class="avatar-wrapper">
-              <el-avatar class="avatar-icon" :size="40"  :src="user != null ? user.avatar: defaultAvatar"></el-avatar>
-              <span class="avatar-text">{{user != null ? user.username : "username"}}</span>
+              <el-avatar class="avatar-icon" :size="40"  :src="this.user != null ? this.user.avatar: defaultAvatar"></el-avatar>
+              <span class="avatar-text">{{this.user != null ? this.user.nickname : "username"}}</span>
             </div>
           </el-menu-item>
         </el-menu>
@@ -31,72 +31,92 @@
         </div>
         <div v-if="isLogin">
 
+          <div v-if="index === '1'" key="1">
+            <el-card style="height: 750px; overflow: auto">
+              <file-list></file-list>
+            </el-card>
+          </div>
+
+          <div v-if="index === '3'" key="3">
+            <time-tables></time-tables>
+          </div>
+
+          <div v-if="index === '5'" key="5">
+            <div>
+              <el-card style="width: 300px;" class="user-detail">
+                <template #header>
+                  <div class="user-detail-header">
+                    <el-avatar :src="this.user!=null ? this.user.avatar : defaultUser.avatar" :size="60" @click="isUpdateAvatar = true"></el-avatar>
+                    <span class="user-detail-header-text">{{this.user != null ? this.user.nickname : "nickname"}}</span>
+                  </div>
+                </template>
+                <el-descriptions border :column="1">
+                  <el-descriptions-item label="用户名">
+                    {{this.user != null ? this.user.username : "username"}}
+                  </el-descriptions-item>
+                  <el-descriptions-item label="密码">
+                    <span type="password">************</span>
+                  </el-descriptions-item>
+                  <el-descriptions-item label="创建时间">
+                    <span type="password">{{this.user != null ? this.user.createTime: "2023-4-21"}}</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-button type="info" class="edit-button" @click="onLogOut">注销</el-button>
+
+                <el-dialog v-model="isUpdateAvatar" title="资料编辑" width="500" style="height: 300px">
+                  <el-upload
+                      class="avatar-uploader"
+                      action="http://localhost:8181/user/updateAvatar"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :before-upload="beforeAvatarUpload"
+                      :headers="headers"
+                  >
+                    <el-avatar v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <el-icon v-else class="avatar-uploader-icon">修改头像</el-icon>
+                  </el-upload>
+                  <el-form v-model="userForm" class="user-detail-form" >
+                    <el-form-item label="昵称">
+                      <el-input v-model="userForm.nickname"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" style="width: 100px;margin-left: 50px" @click="updateNickName">修改昵称</el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-dialog>
+              </el-card>
+            </div>
+
+            <el-card class="calender">
+              <el-calendar>
+                <template #date-cell="{data}">
+                </template>
+              </el-calendar>
+            </el-card>
+          </div>
         </div>
 
-        <div v-if="index === '1'" key="1">
-          <el-card style="height: 750px; overflow: auto">
-            <file-list></file-list>
-          </el-card>
+        <!-- 登录模块 -->
+        <div v-if="index === '5' && !isLogin" >
+          <div class="login-form-wrapper">
+            <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
+              <p class="login-form-title">Study-Elf 登录</p>
+              <el-form-item prop="username" class="login-form-input">
+                <el-input v-model="loginForm.username" placeholder="账号"></el-input>
+              </el-form-item>
+              <el-form-item prop="password" class="login-form-input">
+                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>
+              </el-form-item>
+              <el-form-item class="login-form-button">
+                <el-button @click="isRegister = true" type="info">注册</el-button>
+                <el-button type="primary" @click="Login" :loading="loading">
+                  <span v-if="!loading">登 录</span>
+                  <span v-else>登 录 中...</span>
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
-
-        <div v-if="index === '3'" key="3">
-          <time-tables></time-tables>
-        </div>
-
-        <div v-if="index === '5'" key="5">
-          <el-card style="width: 300px;" class="user-detail">
-            <template #header>
-              <div class="user-detail-header">
-                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" :size="60"></el-avatar>
-                <span class="user-detail-header-text">username</span>
-              </div>
-
-            </template>
-            <el-descriptions border column="1">
-              <el-descriptions-item label="用户名">
-                心随风飘扬
-              </el-descriptions-item>
-              <el-descriptions-item label="密码">
-                <span type="password">************</span>
-              </el-descriptions-item>
-              <el-descriptions-item label="创建时间">
-                <span type="password">2022-2-22</span>
-              </el-descriptions-item>
-            </el-descriptions>
-            <el-button type="primary" class="edit-button">编辑</el-button>
-          </el-card>
-
-          <el-card class="calender">
-            <el-calendar>
-              <template #date-cell="{data}">
-              </template>
-            </el-calendar>
-          </el-card>
-
-
-        </div>
-
-<!--        &lt;!&ndash; 登录模块 &ndash;&gt;-->
-<!--        <div v-if="index === '5' && !isLogin" >-->
-<!--          <div class="login-form-wrapper">-->
-<!--            <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">-->
-<!--              <p class="login-form-title">Study-Elf 登录</p>-->
-<!--              <el-form-item prop="username" class="login-form-input">-->
-<!--                <el-input v-model="loginForm.username" placeholder="账号"></el-input>-->
-<!--              </el-form-item>-->
-<!--              <el-form-item prop="password" class="login-form-input">-->
-<!--                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>-->
-<!--              </el-form-item>-->
-<!--              <el-form-item class="login-form-button">-->
-<!--                <el-button @click="isRegister = true" type="info">注册</el-button>-->
-<!--                <el-button type="primary" @click="handleLogin" :loading="loading">-->
-<!--                  <span v-if="!loading">登 录</span>-->
-<!--                  <span v-else>登 录 中...</span>-->
-<!--                </el-button>-->
-<!--              </el-form-item>-->
-<!--            </el-form>-->
-<!--          </div>-->
-<!--        </div>-->
       </el-main>
 
       <!-- 注册弹出模块 -->
@@ -125,14 +145,16 @@ import TimeTables from "@/components/TimeTables";
 import FileList from "@/components/FileList";
 import Config from "@/settings"
 import {getToken} from "@/utils/auth";
-import {mapState} from "vuex";
-import {register} from "@/api/user";
+import {mapGetters, mapState} from "vuex";
+import {register, updateUser} from "@/api/user";
 import Cookies from "js-cookie";
-
+import UserCard from "@/components/UserCard";
+import store from "@/store";
 
 export default {
   name: "MainControl",
   components:{
+    UserCard,
     TimeTables,
     FileList,
   },
@@ -142,7 +164,7 @@ export default {
   data() {
     return {
       defaultAvatar : "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-      index: "1",
+      index: "5",
       isRegister: false,
       loginForm:{
         username: '',
@@ -158,6 +180,26 @@ export default {
       },
       loading:false,
       isLogin:false,
+
+      defaultUser: {
+        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        nickname:'nickname',
+        username:'username',
+        createTime:'2023-4-21',
+        password:'',
+        userId:'',
+        avatarPath:'',
+      },
+      isUpdateAvatar: false,
+      imageUrl: '',
+      headers: {
+        Authorization: getToken()
+      },
+      userDetail:'',
+      userForm:{
+        nickname:''
+      },
+      test: {}
     }
   },
   created() {
@@ -181,17 +223,21 @@ export default {
           _this.isLogin = true
         })
       } else {
-        // _this.index = "5"
+        _this.index = "5"
       }
 
     },
     clickClose() {
       window.ipcRenderer.send('close-main-control')
     },
+    Login() {
+      this.handleLogin()
+      setTimeout(()=> {
+        store.dispatch('GetInfo')
+      },100)
+    },
     handleLogin() {
       const _this = this
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
           this.loading = true
           _this.$store.dispatch('Login', this.loginForm).then((resp) => {
             Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
@@ -201,11 +247,7 @@ export default {
           }).catch(() => {
             this.loading = false
           })
-        } else {
-          console.log("error submit")
-          return false
-        }
-      })
+
     },
     handleRegister() {
       const _this = this
@@ -217,7 +259,45 @@ export default {
         _this.isRegister = false
       })
     },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.isUpdateAvatar = false
+      this.$store.dispatch('GetInfo')
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 5;
 
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG,PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    onLogOut() {
+      const _this = this
+      this.$store.dispatch('LogOut').then(function (resp) {
+        _this.isLogin = false
+        window.ipcRenderer.send("reload")
+      })
+    },
+    updateNickName() {
+      const _this = this
+      const user = {}
+      user.nickname = this.userForm.nickname
+      user.userId = this.user.userId
+      user.username = this.user.username
+      user.password = this.user.password
+      user.avatar = this.user.avatar
+      user.createTime = this.user.createTime
+      user.avatarPath = this.user.avatarPath
+      updateUser(user).then(function (resp) {
+        _this.isUpdateAvatar = false
+        window.ipcRenderer.send("reload")
+      })
+    }
   }
 }
 </script>
@@ -272,6 +352,13 @@ export default {
   text-align: center;
   font-size: 24px;
 }
+
+.calender {
+  width: 800px;
+  position: absolute;
+  bottom: 110px;
+}
+
 .edit-button {
   margin-top: 10px;
   width: 100%;
@@ -279,11 +366,6 @@ export default {
 .user-detail {
   position: relative;
   left: 73%;
-}
-.calender {
-  width: 800px;
-  position: relative;
-  bottom: 305px;
 }
 .user-detail-header-text {
   position: relative;
@@ -293,6 +375,25 @@ export default {
   font-size: 18px;
 }
 
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+.user-detail-form {
+  width: 250px;
+  position: relative;
+  left: 45%;
+  bottom: 160px;
+}
 
 
 </style>

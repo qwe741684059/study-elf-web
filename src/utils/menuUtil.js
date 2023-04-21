@@ -22,4 +22,8 @@ export function openMainControl() {
         const win = BrowserWindow.fromWebContents(event.sender)
         win.close()
     })
+    ipcMain.on('reload', (event, ...args) => {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        win.reload()
+    })
 }

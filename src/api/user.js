@@ -29,3 +29,18 @@ export function register(user) {
         method: 'post'
     })
 }
+export function updateAvatar(file) {
+    return request({
+        url: 'user/updateAvatar',
+        data: file,
+        method: 'post'
+    })
+}
+
+export function updateUser(user) {
+    return request({
+        url: 'user/updateUser',
+        data: user,
+        method: 'post'
+    })
+}
