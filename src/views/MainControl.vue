@@ -4,10 +4,10 @@
       <el-aside width="300px">
         <el-menu :default-active="index" background-color="#F5F5F5"  @select="onSelect">
           <el-menu-item index="1">
-            <span>笔记管理</span>
+            <span>文档管理</span>
           </el-menu-item>
           <el-menu-item index="2">
-            <span>文档管理</span>
+            <span>笔记管理</span>
           </el-menu-item>
           <el-menu-item index="3">
             <span>课程表</span>
@@ -29,19 +29,23 @@
         <div>
           <el-button class="close" icon="Close" @click="clickClose" text ></el-button>
         </div>
-        <div v-if="isLogin">
+        <div v-if="alive" key="alive">
 
-          <div v-if="index === '1'" key="1">
+          <div v-if="index === '1' && alive" key="1">
             <el-card style="height: 750px; overflow: auto">
               <file-list></file-list>
             </el-card>
           </div>
 
-          <div v-if="index === '3'" key="3">
+          <div v-if="index === '2' && alive" key="1">
+
+          </div>
+
+          <div v-if="index === '3' && alive" key="3">
             <time-tables></time-tables>
           </div>
 
-          <div v-if="index === '5'" key="5">
+          <div v-if="index === '5' && alive" key="5">
             <div>
               <el-card style="width: 300px;" class="user-detail">
                 <template #header>
@@ -97,7 +101,7 @@
         </div>
 
         <!-- 登录模块 -->
-        <div v-if="index === '5' && !isLogin" >
+        <div v-if="index === '5' && !alive" key="login">
           <div class="login-form-wrapper">
             <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
               <p class="login-form-title">Study-Elf 登录</p>
@@ -153,6 +157,7 @@ import store from "@/store";
 
 export default {
   name: "MainControl",
+  inject:['reload'],
   components:{
     UserCard,
     TimeTables,
@@ -165,6 +170,7 @@ export default {
     return {
       defaultAvatar : "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       index: "5",
+      alive: false,
       isRegister: false,
       loginForm:{
         username: '',
@@ -179,7 +185,6 @@ export default {
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
       },
       loading:false,
-      isLogin:false,
 
       defaultUser: {
         avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
@@ -199,18 +204,20 @@ export default {
       userForm:{
         nickname:''
       },
-      test: {}
+      test: {},
     }
   },
   created() {
     const _this = this
     if (getToken()) {
+      this.alive = true
       _this.$store.dispatch('GetInfo').then(function (resp) {
-        _this.isLogin = true
+        // _this.isLogin = true
       })
     } else {
       _this.index = "5"
     }
+    console.log(this.alive)
   },
   mounted() {
   },
@@ -218,9 +225,11 @@ export default {
     onSelect(index) {
       this.index = index
       const _this = this
+      if (!getToken()) {
+        this.index = "5"
+      }
       if (getToken()) {
         _this.$store.dispatch('GetInfo').then(function (resp) {
-          _this.isLogin = true
         })
       } else {
         _this.index = "5"
@@ -231,10 +240,14 @@ export default {
       window.ipcRenderer.send('close-main-control')
     },
     Login() {
+      const _this = this
       this.handleLogin()
       setTimeout(()=> {
+        this.alive = true
         store.dispatch('GetInfo')
       },100)
+
+
     },
     handleLogin() {
       const _this = this
@@ -243,11 +256,10 @@ export default {
             Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
             Cookies.set('password', this.loginForm.password, { expires: Config.tokenCookieExpires })
             this.loading = false
-            _this.isLogin = true
+            // _this.isLogin = true
           }).catch(() => {
             this.loading = false
           })
-
     },
     handleRegister() {
       const _this = this
@@ -279,9 +291,10 @@ export default {
     onLogOut() {
       const _this = this
       this.$store.dispatch('LogOut').then(function (resp) {
-        _this.isLogin = false
-        window.ipcRenderer.send("reload")
       })
+      setTimeout(()=> {
+        this.alive = false
+      },100)
     },
     updateNickName() {
       const _this = this

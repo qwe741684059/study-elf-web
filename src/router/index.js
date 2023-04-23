@@ -1,5 +1,6 @@
 import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import OfficeViewer from "@/components/OfficeViewer";
 
 const routes = [
   {
@@ -11,6 +12,11 @@ const routes = [
     path: '/mainControl/:filePath*',
     component: () => import('@/views/MainControl')
   },
+  {
+    path: '/office',
+    component: OfficeViewer
+  }
+
 ]
 
 const router = createRouter({

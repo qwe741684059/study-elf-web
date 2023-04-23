@@ -72,6 +72,47 @@ async function createWindow() {
       window: win
     });
   })
+
+  ipcMain.on('close-main-control', (event, ...args) => {
+    let win = BrowserWindow.fromWebContents(event.sender)
+    win.close()
+    win = null
+  })
+  ipcMain.on('reload', (event, ...args) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    win.reload()
+  })
+  let officeWindow = null
+  ipcMain.on('openOffice',(event, ...args) => {
+    console.log("打开Office")
+    if (officeWindow) {
+      officeWindow.close()
+      officeWindow = null
+    }
+      officeWindow = new BrowserWindow( {
+        show: false,
+        // fullscreen:true,
+        // resizable:false,
+        webPreferences: {
+          preload:path.join(__dirname, 'preload.js'),
+          nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+          contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+        }
+      } )
+      officeWindow.loadURL('http://localhost:8080/office').then()
+      officeWindow.on('close', () => {
+        officeWindow = null
+      })
+      officeWindow.once('ready-to-show', () => {
+        officeWindow.webContents.send('officeData',args)
+        officeWindow.show()
+      })
+
+
+  })
+
+
+
 }
 
 
