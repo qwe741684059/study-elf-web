@@ -8,10 +8,18 @@ export function addFile(file) {
     })
 }
 
-export function selectFileListByFilePath(filePath) {
+export function selectFileListByFilePath(filePathVO) {
     return request({
         url: 'file/selectFileListByFilePath',
         method: 'post',
-        data: filePath
+        data: filePathVO
+    })
+}
+
+export function deleteFile(file) {
+    return request({
+        url: 'file/deleteFile',
+        method: 'post',
+        data: file
     })
 }

@@ -108,8 +108,36 @@ async function createWindow() {
         officeWindow.show()
       })
 
+  })
+
+  let markdownWindow = null
+  ipcMain.on('openMarkdown',(event, ...args) => {
+    console.log("打开markdown")
+    if (markdownWindow) {
+      markdownWindow.close()
+      markdownWindow = null
+    }
+    markdownWindow = new BrowserWindow( {
+      show: false,
+      // fullscreen:true,
+      // resizable:false,
+      webPreferences: {
+        preload:path.join(__dirname, 'preload.js'),
+        nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+        contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      }
+    } )
+    markdownWindow.loadURL('http://localhost:8080/markdown').then()
+    markdownWindow.on('close', () => {
+      markdownWindow = null
+    })
+    markdownWindow.once('ready-to-show', () => {
+      markdownWindow.webContents.send('markdownData',args)
+      markdownWindow.show()
+    })
 
   })
+
 
 
 

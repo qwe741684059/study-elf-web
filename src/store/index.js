@@ -2,10 +2,12 @@ import { createStore } from 'vuex'
 import {getToken, removeToken, setToken} from "@/utils/auth";
 import {getInfo, login, logout} from "@/api/user";
 
+
 export default createStore({
   state: {
     user: {},
-    token: getToken()
+    token: getToken(),
+    alive:false
   },
   getters: {
     user: state => state.user
@@ -17,29 +19,38 @@ export default createStore({
     SET_USER: (state, user) => {
       state.user = user
     },
+    SET_ALIVE: (state, alive) => {
+      state.alive = alive
+    }
   },
   actions: {
-    Login({commit}, user) {
-      login(user).then(resp => {
+    async Login({commit}, user) {
+      await login(user).then(resp => {
         setToken(resp.data.token)
         commit('SET_TOKEN', resp.data.token)
         commit('SET_USER', resp.data.user)
+        commit('SET_ALIVE', true)
       }).catch(e => {
         logOut(commit)
       })
     },
 
-    GetInfo({commit}) {
-      getInfo().then(resp => {
+    setAlive({commit}) {
+      commit('SET_ALIVE', true)
+    },
+
+    async GetInfo({commit}) {
+      await getInfo().then(resp => {
         commit('SET_USER', resp.data.user)
       }).catch(e => {
         logOut(commit)
       })
     },
-    LogOut({commit}) {
-      logout().then(resp => {
-        commit('SET_TOKEN', '')
+    async LogOut({commit}) {
+      await logout().then(resp => {
+        commit('SET_TOKEN', null)
         commit('SET_USER', null)
+        commit('SET_ALIVE', false)
         removeToken()
       }).catch(e => {
         logOut(commit)
@@ -51,7 +62,8 @@ export default createStore({
 })
 
 export const logOut = (commit) => {
-  commit('SET_TOKEN', '')
+  commit('SET_TOKEN', null)
   commit('SET_USER', null)
+  commit('SET_ALIVE', false)
   removeToken()
 }

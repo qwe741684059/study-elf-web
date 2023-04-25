@@ -42,10 +42,11 @@ service.interceptors.response.use(
         console.log(code)
         if (code) {
             if (code === 401) {
-                _this.$store.dispatch('LogOut').then(() => {
-                    Cookies.set('point', 401)
-                    location.reload()
-                })
+                console.log("失败")
+                // _this.$store.dispatch('LogOut').then(() => {
+                //     Cookies.set('point', 401)
+                //     location.reload()
+                // })
             } else if (code === 403) {
                 console.log("403错误代码")
             } else {

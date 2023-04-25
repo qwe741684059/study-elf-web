@@ -16,7 +16,7 @@
     "@onlyoffice/document-editor-vue": "^1.3.0",
     "axios": "^1.3.4",
     "core-js": "^3.8.3",
-    "element-plus": "^2.2.36",
+    "element-plus": "^2.3.4",
     "js-cookie": "^3.0.1",
     "jszip": "^3.10.1",
     "pixi-live2d-display": "^0.4.0",

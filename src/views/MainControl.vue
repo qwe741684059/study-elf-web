@@ -29,23 +29,33 @@
         <div>
           <el-button class="close" icon="Close" @click="clickClose" text ></el-button>
         </div>
-        <div v-if="alive" key="alive">
+        <div v-if="this.alive === true" key="alive">
 
-          <div v-if="index === '1' && alive" key="1">
+          <div v-if="index === '1' && this.alive===true" key="1">
             <el-card style="height: 750px; overflow: auto">
               <file-list></file-list>
             </el-card>
           </div>
 
-          <div v-if="index === '2' && alive" key="1">
+          <div v-if="index === '2' && this.alive===true" key="1">
+            <el-card  style="height: 750px; overflow: auto">
+              <markdown-list></markdown-list>
+            </el-card>
 
           </div>
 
-          <div v-if="index === '3' && alive" key="3">
-            <time-tables></time-tables>
+          <div v-if="index === '3' && this.alive===true" key="3">
+            <el-card>
+              <time-tables></time-tables>
+            </el-card>
+
           </div>
 
-          <div v-if="index === '5' && alive" key="5">
+          <div v-if="index === '4' && this.alive===true" key="3">
+            <memorandum></memorandum>
+          </div>
+
+          <div v-if="index === '5' && this.alive===true" key="5">
             <div>
               <el-card style="width: 300px;" class="user-detail">
                 <template #header>
@@ -94,6 +104,15 @@
             <el-card class="calender">
               <el-calendar>
                 <template #date-cell="{data}">
+                  <span>
+                    {{ data.day.split('-').slice(1).join('-') }}
+                    <span v-if="timeList.indexOf(data.day) !== -1">
+                      <el-icon size="25" >
+                        <svg t="1682430380835" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7440" width="200" height="200"><path d="M511.3 874.9c-48.9 0-96.4-9.6-141.2-28.5-43.2-18.3-82-44.4-115.3-77.7-33.3-33.3-59.4-72.1-77.7-115.3-18.9-44.7-28.5-92.2-28.5-141.2 0-48.9 9.6-96.4 28.5-141.2 18.3-43.2 44.4-82 77.7-115.3 33.3-33.3 72.1-59.4 115.3-77.7 44.7-18.9 92.2-28.5 141.2-28.5 48.9 0 96.4 9.6 141.2 28.5 43.2 18.3 82 44.4 115.3 77.7 33.3 33.3 59.4 72.1 77.7 115.3 18.9 44.7 28.5 92.2 28.5 141.2 0 48.9-9.6 96.4-28.5 141.2-18.3 43.2-44.4 82-77.7 115.3-33.3 33.3-72.1 59.4-115.3 77.7-44.7 18.9-92.2 28.5-141.2 28.5z m0-665.4c-166.9 0-302.7 135.8-302.7 302.7 0 166.9 135.8 302.7 302.7 302.7 166.9 0 302.7-135.8 302.7-302.7 0-166.9-135.8-302.7-302.7-302.7zM128 313.8c-5.2 0-10.5-1.4-15.3-4.2-14.2-8.5-18.9-26.9-10.5-41.1 40.4-68 97.6-125.5 165.4-166.2 14.2-8.5 32.6-3.9 41.2 10.3 8.5 14.2 3.9 32.6-10.3 41.2-59.3 35.6-109.4 85.9-144.7 145.4-5.6 9.4-15.6 14.6-25.8 14.6zM897.5 312.9c-10.2 0-20.2-5.2-25.8-14.6-35.4-59.4-85.6-109.6-145-145.1-14.2-8.5-18.9-26.9-10.4-41.1 8.5-14.2 26.9-18.9 41.1-10.4 67.9 40.6 125.2 97.9 165.7 165.8 8.5 14.2 3.8 32.6-10.4 41.1-4.7 3-10 4.3-15.2 4.3z" fill="#515151" p-id="7441"></path><path d="M223.6 923.1c-7.7 0-15.4-2.9-21.2-8.8-11.7-11.7-11.7-30.7 0-42.4l96.4-96.4c11.7-11.7 30.7-11.7 42.4 0s11.7 30.7 0 42.4l-96.4 96.4c-5.8 5.9-13.5 8.8-21.2 8.8zM800.6 923.1c-7.7 0-15.4-2.9-21.2-8.8L683 817.9c-11.7-11.7-11.7-30.7 0-42.4s30.7-11.7 42.4 0l96.4 96.4c11.7 11.7 11.7 30.7 0 42.4-5.9 5.9-13.6 8.8-21.2 8.8z" fill="#515151" p-id="7442"></path><path d="M647.5 677.5c-7.6 0-15.3-2.9-21.1-8.7L490.2 533.5c-5.7-5.6-8.9-13.3-8.9-21.3V283.8c0-16.6 13.4-30 30-30s30 13.4 30 30v215.9l127.3 126.5c11.8 11.7 11.8 30.7 0.1 42.4-5.7 6-13.5 8.9-21.2 8.9z" fill="#515151" p-id="7443"></path></svg>
+                      </el-icon>
+                    </span>
+                  </span>
+
                 </template>
               </el-calendar>
             </el-card>
@@ -101,7 +120,7 @@
         </div>
 
         <!-- 登录模块 -->
-        <div v-if="index === '5' && !alive" key="login">
+        <div v-if="index === '5' && !this.alive" key="login">
           <div class="login-form-wrapper">
             <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
               <p class="login-form-title">Study-Elf 登录</p>
@@ -154,6 +173,9 @@ import {register, updateUser} from "@/api/user";
 import Cookies from "js-cookie";
 import UserCard from "@/components/UserCard";
 import store from "@/store";
+import MarkdownList from "@/components/MarkdownList";
+import Memorandum from "@/components/Memorandum";
+import {getTimeList} from "@/api/memorandum";
 
 export default {
   name: "MainControl",
@@ -162,16 +184,18 @@ export default {
     UserCard,
     TimeTables,
     FileList,
+    MarkdownList,
+    Memorandum
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user","alive"])
   },
   data() {
     return {
       defaultAvatar : "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       index: "5",
-      alive: false,
       isRegister: false,
+      timeList:[],
       loginForm:{
         username: '',
         password: '',
@@ -209,15 +233,21 @@ export default {
   },
   created() {
     const _this = this
+    console.log("created方法的token："+getToken())
     if (getToken()) {
-      this.alive = true
+      console.log("created方法调用：有token")
+      _this.$store.dispatch('setAlive')
       _this.$store.dispatch('GetInfo').then(function (resp) {
-        // _this.isLogin = true
+        getTimeList(_this.user.userId).then(function (resp) {
+          _this.timeList = resp.data
+          console.log(_this.timeList)
+        })
+
       })
+
     } else {
       _this.index = "5"
     }
-    console.log(this.alive)
   },
   mounted() {
   },
@@ -228,12 +258,12 @@ export default {
       if (!getToken()) {
         this.index = "5"
       }
-      if (getToken()) {
-        _this.$store.dispatch('GetInfo').then(function (resp) {
-        })
-      } else {
-        _this.index = "5"
-      }
+      // if (getToken()) {
+      //   _this.$store.dispatch('GetInfo').then(function (resp) {
+      //   })
+      // } else {
+      //   _this.index = "5"
+      // }
 
     },
     clickClose() {
@@ -242,24 +272,23 @@ export default {
     Login() {
       const _this = this
       this.handleLogin()
-      setTimeout(()=> {
-        this.alive = true
-        store.dispatch('GetInfo')
-      },100)
-
-
     },
     handleLogin() {
       const _this = this
-          this.loading = true
-          _this.$store.dispatch('Login', this.loginForm).then((resp) => {
-            Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
-            Cookies.set('password', this.loginForm.password, { expires: Config.tokenCookieExpires })
-            this.loading = false
-            // _this.isLogin = true
-          }).catch(() => {
-            this.loading = false
-          })
+      this.loading = true
+      _this.$store.dispatch('Login', this.loginForm).then((resp) => {
+        Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
+        Cookies.set('password', this.loginForm.password, { expires: Config.tokenCookieExpires })
+        _this.loading = false
+        console.log("进入login方法")
+        if (getToken()) {
+          console.log("login完成：获得token")
+          store.dispatch('GetInfo')
+        }
+        // _this.isLogin = true
+      }).catch(() => {
+        _this.loading = false
+      })
     },
     handleRegister() {
       const _this = this
@@ -291,10 +320,8 @@ export default {
     onLogOut() {
       const _this = this
       this.$store.dispatch('LogOut').then(function (resp) {
+        console.log("登出后的token："+getToken())
       })
-      setTimeout(()=> {
-        this.alive = false
-      },100)
     },
     updateNickName() {
       const _this = this

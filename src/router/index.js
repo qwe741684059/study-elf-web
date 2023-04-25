@@ -1,6 +1,7 @@
 import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import OfficeViewer from "@/components/OfficeViewer";
+import MarkdownViewer from "@/components/MarkdownViewer";
 
 const routes = [
   {
@@ -15,6 +16,10 @@ const routes = [
   {
     path: '/office',
     component: OfficeViewer
+  },
+  {
+    path: '/markdown',
+    component: MarkdownViewer
   }
 
 ]
