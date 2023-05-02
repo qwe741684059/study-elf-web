@@ -6,5 +6,5 @@ module.exports = defineConfig({
       preload:'src/preload.js',
       nodeIntegration:true,
     }
-  }
+  },
 })

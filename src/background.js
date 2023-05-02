@@ -1,13 +1,16 @@
 'use strict'
 
 import path from 'path'
-import { app, protocol, BrowserWindow, screen, ipcMain, Menu } from 'electron'
+import { app, protocol, BrowserWindow, screen, ipcMain, Menu, Tray, nativeImage } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import {openMainControl} from "@/utils/menuUtil";
+import {config} from "pixi-live2d-display";
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-export let win = null
+let win = null
+let tray
+let configWindow = null
 
 // 菜单模板
 const menuTemplate = [
@@ -16,17 +19,14 @@ const menuTemplate = [
     click: openMainControl
   },
   {
-    label: '剪贴',
-    role: 'cut'
+    label: '设置',
+    click: openConfig
   },
   {
-    label: '复制',
-    role: 'copy'
-  },
-  {
-    label: '粘贴',
-    role: 'paste'
+    label: '隐藏',
+    click: hidden
   }
+
 ];
 
 
@@ -59,8 +59,8 @@ async function createWindow() {
     // Load the index.html when not in development
     await win.loadURL('app://./index.html')
   }
-  // win.setAlwaysOnTop(true, 'pop-up-menu')
-
+  win.setAlwaysOnTop(true, 'screen-saver')
+  win.setSkipTaskbar(true)
   ipcMain.on('set-ignore-mouse-events', (event, ...args) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     win.setIgnoreMouseEvents(...args)
@@ -172,8 +172,29 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+
   await createWindow()
+
 })
+app.whenReady().then(() => {
+  let dir = path.join(app.getAppPath(), '/../src/assets/logo.png')
+  const icon = nativeImage.createFromPath(dir)
+  tray = new Tray(icon)
+  tray.setToolTip('This is my application')
+  tray.setTitle('This is my title')
+  let menu = Menu.buildFromTemplate(([
+    {label: '打开', click:show},
+    {label: '关闭', click: app.quit}
+  ]))
+  tray.setContextMenu(menu)
+  tray.on('double-click', () => {
+    setTimeout(() => {
+      win.show()
+    },300)
+  })
+})
+
+
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
@@ -188,4 +209,47 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+
+function show() {
+  win.show()
+  win.setSkipTaskbar(true)
+}
+
+function hidden() {
+  win.hide()
+  win.setSkipTaskbar(true)
+}
+
+function openConfig() {
+  // if (configWindow !== null) {
+  //   configWindow.focus()
+  // } else {
+  //   configWindow = new BrowserWindow({
+  //     frame: false,
+  //     width:600,
+  //     height:400,
+  //     webPreferences: {
+  //       preload:path.join(__dirname, 'preload.js'),
+  //       // Use pluginOptions.nodeIntegration, leave this alone
+  //       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+  //       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+  //       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+  //     }
+  //   })
+  //   configWindow.loadURL("http://localhost:8080/config").then()
+  //   configWindow.once("ready-to-show",() => {
+  //     configWindow.show()
+  //   })
+  //   configWindow.on('close', () => {
+  //     configWindow = null
+  //   })
+  //   configWindow.on('blur', () => {
+  //     configWindow.close()
+  //     configWindow = null
+  //   })
+  //
+  // }
+
 }

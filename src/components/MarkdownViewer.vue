@@ -1,5 +1,8 @@
 <template>
-  <div id="vditor"></div>
+  <el-scrollbar height="100%">
+    <div id="vditor"></div>
+  </el-scrollbar>
+
 </template>
 
 <script>
@@ -24,6 +27,7 @@ export default {
         console.log(_this.markdown)
       }, setTimeout(()=> {
         _this.markdownEditor = new Vditor('vditor', {
+          typewriterMode:true,
           value:_this.markdown.content,
           counter: { //计数
             enable: true,

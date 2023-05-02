@@ -23,3 +23,11 @@ export function deleteFile(file) {
         data: file
     })
 }
+
+export function updateFile(file) {
+    return request({
+        url: 'file/updateFile',
+        method: 'post',
+        data:file
+    })
+}

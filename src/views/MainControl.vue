@@ -1,6 +1,9 @@
 <template>
-  <div>
+  <div >
     <el-container>
+      <div class="mainControl-background" style="z-index: -1; position: absolute; opacity: 0.4">
+        <sakura></sakura>
+      </div>
       <el-aside width="300px">
         <el-menu :default-active="index" background-color="#F5F5F5"  @select="onSelect">
           <el-menu-item index="1">
@@ -26,8 +29,8 @@
       </el-aside>
       <el-main >
         <!-- 右上角关闭图标 -->
-        <div>
-          <el-button class="close" icon="Close" @click="clickClose" text ></el-button>
+        <div >
+          <el-button class="close" icon="Close" @click="clickClose" text style="z-index: 1000"></el-button>
         </div>
         <div v-if="this.alive === true" key="alive">
 
@@ -45,14 +48,14 @@
           </div>
 
           <div v-if="index === '3' && this.alive===true" key="3">
-            <el-card>
-              <time-tables></time-tables>
+            <el-card style="position: relative;bottom: 40px">
+              <time-tables ></time-tables>
             </el-card>
 
           </div>
 
           <div v-if="index === '4' && this.alive===true" key="3">
-            <memorandum></memorandum>
+            <memorandum style="position: relative;bottom: 25px"></memorandum>
           </div>
 
           <div v-if="index === '5' && this.alive===true" key="5">
@@ -160,6 +163,8 @@
         </template>
       </el-dialog>
     </el-container>
+
+
   </div>
 </template>
 
@@ -176,6 +181,7 @@ import store from "@/store";
 import MarkdownList from "@/components/MarkdownList";
 import Memorandum from "@/components/Memorandum";
 import {getTimeList} from "@/api/memorandum";
+import Sakura from "@/components/sakura/Sakura";
 
 export default {
   name: "MainControl",
@@ -185,7 +191,8 @@ export default {
     TimeTables,
     FileList,
     MarkdownList,
-    Memorandum
+    Memorandum,
+    Sakura
   },
   computed: {
     ...mapState(["user","alive"])
@@ -240,7 +247,6 @@ export default {
       _this.$store.dispatch('GetInfo').then(function (resp) {
         getTimeList(_this.user.userId).then(function (resp) {
           _this.timeList = resp.data
-          console.log(_this.timeList)
         })
 
       })
@@ -253,11 +259,20 @@ export default {
   },
   methods: {
     onSelect(index) {
+      this.$router.push("/mainControl")
       this.index = index
       const _this = this
       if (!getToken()) {
         this.index = "5"
       }
+      if (this.index === "5" && this.alive === true) {
+        console.log("进来了")
+        getTimeList(_this.user.userId).then(function (resp) {
+          _this.timeList = resp.data
+          console.log(_this.timeList)
+        })
+      }
+
       // if (getToken()) {
       //   _this.$store.dispatch('GetInfo').then(function (resp) {
       //   })
@@ -344,7 +359,7 @@ export default {
 
 <style scoped>
 .placeholder{
-  height:570px;
+  height:540px;
 
 }
 
@@ -434,6 +449,7 @@ export default {
   left: 45%;
   bottom: 160px;
 }
-
+.mainControl-background {
+}
 
 </style>

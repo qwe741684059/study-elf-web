@@ -36,7 +36,7 @@ export default{
       let config = {
         document: {
           fileType:option.fileType,
-          title:option.fileName,
+          title:option.title,
           permissions: {
             edit:false
           },

@@ -4,14 +4,13 @@ import path from "path";
 
 
 export function openMainControl() {
-
+    const _this = this
     let mainControlWindow
     if (mainControlWindow) {
         mainControlWindow.show()
     } else {
         mainControlWindow = new BrowserWindow( {
             show: false,
-            fullscreen:true,
             frame:false,
             resizable:false,
             webPreferences: {
@@ -25,6 +24,7 @@ export function openMainControl() {
             mainControlWindow = null
         })
         mainControlWindow.once('ready-to-show', () => {
+            mainControlWindow.maximize()
             mainControlWindow.show()
         })
 

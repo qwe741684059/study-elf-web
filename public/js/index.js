@@ -22,7 +22,7 @@ export async function main() {
     const scaleY = (innerHeight * 0.4) / model.height;
 
     model.scale.set(Math.min(scaleX, scaleY));
-
+    model.scale.set(0.2);
     model.y = innerHeight * 0.1;
 
     draggable(model)

@@ -2,6 +2,7 @@ import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import OfficeViewer from "@/components/OfficeViewer";
 import MarkdownViewer from "@/components/MarkdownViewer";
+import ConfigView from "@/views/ConfigView";
 
 const routes = [
   {
@@ -20,8 +21,11 @@ const routes = [
   {
     path: '/markdown',
     component: MarkdownViewer
+  },
+  {
+    path: '/config',
+    component: ConfigView
   }
-
 ]
 
 const router = createRouter({
