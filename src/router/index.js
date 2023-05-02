@@ -25,7 +25,7 @@ const routes = [
   {
     path: '/config',
     component: ConfigView
-  }
+  },
 ]
 
 const router = createRouter({

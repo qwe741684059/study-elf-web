@@ -2,10 +2,10 @@
 import * as PIXI from 'pixi.js'
 import  { Live2DModel } from "pixi-live2d-display";
 
-
 window.PIXI = PIXI
 
 let app = null
+let model
 
 export async function main() {
 
@@ -15,8 +15,7 @@ export async function main() {
         backgroundAlpha: 0,
         resizeTo: window
     })
-
-   const model = await Live2DModel.from('model/shizuku/shizuku.model.json')
+    model = await Live2DModel.from('model/shizuku/shizuku.model.json')
 
     const scaleX = (innerWidth * 0.2) / model.width;
     const scaleY = (innerHeight * 0.4) / model.height;
@@ -38,6 +37,7 @@ export async function main() {
     model.on('pointerover', onModelOver)
     model.on('pointerout', onModelOut)
     model.on("rightclick", onModelRightClick)
+
     app.stage.addChild(model)
 }
 

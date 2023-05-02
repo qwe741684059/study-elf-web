@@ -7,10 +7,12 @@ export default createStore({
   state: {
     user: {},
     token: getToken(),
-    alive:false
+    alive:false,
+    model: null
   },
   getters: {
-    user: state => state.user
+    user: state => state.user,
+    model: state => state.model
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -21,6 +23,9 @@ export default createStore({
     },
     SET_ALIVE: (state, alive) => {
       state.alive = alive
+    },
+    SET_MODEL: (state, model) => {
+      state.model = model
     }
   },
   actions: {
@@ -37,6 +42,10 @@ export default createStore({
 
     setAlive({commit}) {
       commit('SET_ALIVE', true)
+    },
+
+    setModel({commit}, model) {
+      commit('SET_MODEL', model)
     },
 
     async GetInfo({commit}) {

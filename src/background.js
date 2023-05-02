@@ -5,7 +5,6 @@ import { app, protocol, BrowserWindow, screen, ipcMain, Menu, Tray, nativeImage 
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import {openMainControl} from "@/utils/menuUtil";
-import {config} from "pixi-live2d-display";
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let win = null
@@ -223,33 +222,32 @@ function hidden() {
 }
 
 function openConfig() {
-  // if (configWindow !== null) {
-  //   configWindow.focus()
-  // } else {
-  //   configWindow = new BrowserWindow({
-  //     frame: false,
-  //     width:600,
-  //     height:400,
-  //     webPreferences: {
-  //       preload:path.join(__dirname, 'preload.js'),
-  //       // Use pluginOptions.nodeIntegration, leave this alone
-  //       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-  //       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-  //       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
-  //     }
-  //   })
-  //   configWindow.loadURL("http://localhost:8080/config").then()
-  //   configWindow.once("ready-to-show",() => {
-  //     configWindow.show()
-  //   })
-  //   configWindow.on('close', () => {
-  //     configWindow = null
-  //   })
-  //   configWindow.on('blur', () => {
-  //     configWindow.close()
-  //     configWindow = null
-  //   })
-  //
-  // }
+  if (configWindow !== null) {
+    configWindow.focus()
+  } else {
+    configWindow = new BrowserWindow({
+      height:200,
+      width: 600,
+      webPreferences: {
+        preload:path.join(__dirname, 'preload.js'),
+        // Use pluginOptions.nodeIntegration, leave this alone
+        // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+        nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+        contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      }
+    })
+    configWindow.loadURL("http://localhost:8080/config")
+    configWindow.on('close', () => {
+      configWindow = null
+    })
+    configWindow.once('ready-to-show', () => {
+      configWindow.show()
+    })
+    // configWindow.on('blur', () => {
+    //   configWindow.close()
+    //   configWindow = null
+    // })
+
+  }
 
 }

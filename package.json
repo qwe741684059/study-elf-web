@@ -20,7 +20,7 @@
     "js-cookie": "^3.0.1",
     "jszip": "^3.10.1",
     "pixi-live2d-display": "^0.4.0",
-    "pixi.js": "^7.2.4",
+    "pixi.js": "^6.4.2",
     "sass": "^1.62.0",
     "sass-loader": "^13.2.2",
     "timetables": "^1.1.0",
