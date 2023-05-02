@@ -6,7 +6,7 @@
 import { main } from "../../public/js";
 import * as PIXI from 'pixi.js'
 import  { Live2DModel } from "pixi-live2d-display";
-
+import fs from "fs";
 
 export default {
   name: "Live2d",
@@ -27,19 +27,25 @@ export default {
   methods: {
 
     async createModel() {
+      let configPath = window.ipcRenderer.sendSync('getModelPath')
+      let data = fs.readFileSync(configPath)
+      data = JSON.parse(data)
+      console.log(data.path)
+      console.log(data.scale)
+
       this.app = new PIXI.Application({
         view: document.getElementById('canvas'),
         autoStart: true,
         backgroundAlpha: 0,
         resizeTo: window
       })
-      this.model = await Live2DModel.from('model/shizuku/shizuku.model.json')
+      // this.model = await Live2DModel.from('model/shizuku/shizuku.model.json')
+      this.model = await Live2DModel.from(data.path)
+      // const scaleX = (innerWidth * 0.2) / this.model.width;
+      // const scaleY = (innerHeight * 0.4) / this.model.height;
 
-      const scaleX = (innerWidth * 0.2) / this.model.width;
-      const scaleY = (innerHeight * 0.4) / this.model.height;
-
-      this.model.scale.set(Math.min(scaleX, scaleY));
-      this.model.scale.set(0.2);
+      // this.model.scale.set(Math.min(scaleX, scaleY));
+      this.model.scale.set(data.scale);
       this.model.y = innerHeight * 0.1;
 
       draggable(this.model)

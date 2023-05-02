@@ -1,10 +1,11 @@
 'use strict'
 
 import path from 'path'
-import { app, protocol, BrowserWindow, screen, ipcMain, Menu, Tray, nativeImage } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import {app, BrowserWindow, ipcMain, Menu, nativeImage, protocol, Tray} from 'electron'
+import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
+import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import {openMainControl} from "@/utils/menuUtil";
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let win = null
@@ -70,6 +71,15 @@ async function createWindow() {
     menu.popup({
       window: win
     });
+  })
+
+  // 获得静态资源路径
+  ipcMain.on("getModelPath", (event, val) => {
+    event.returnValue = path.join(app.getAppPath(), '/../src/config.json')
+  })
+
+  ipcMain.on("config-relaunch", (event, val) => {
+    win.reload()
   })
 
   ipcMain.on('close-main-control', (event, ...args) => {
@@ -226,7 +236,7 @@ function openConfig() {
     configWindow.focus()
   } else {
     configWindow = new BrowserWindow({
-      height:200,
+      height:230,
       width: 600,
       webPreferences: {
         preload:path.join(__dirname, 'preload.js'),
