@@ -1,41 +1,41 @@
 <template>
-  <div >
+  <div>
     <el-card style="overflow: auto!important; height: 780px">
-      <template #header>
-        <div style="align-items: center;justify-content: space-between;display: flex">
-          <span style="font-size: 20px">备忘录</span>
-          <el-button type="primary" @click="showAdd = true">新增备忘录</el-button>
-        </div>
-      </template>
+        <template #header>
+          <div style="align-items: center;justify-content: space-between;display: flex">
+            <span style="font-size: 20px">备忘录</span>
+            <el-button type="primary" @click="showAdd = true">新增备忘录</el-button>
+          </div>
+        </template>
 
-      <el-timeline>
-        <el-timeline-item v-for="(item, index) in futureList" :timestamp="item.memorandumTime" placement="top" type="primary" :key="index">
-          <el-card>
-            <div style="align-items: center;justify-content: space-between;display: flex">
-              <span style="white-space: pre-wrap">{{item.memorandumContent}}</span>
-              <el-button-group>
-                <el-button type="primary" @click="clickUpdate(item)" icon="Edit">修改</el-button>
-                <el-button type="primary" @click="clickDelete(item)" icon="Delete">删除</el-button>
-              </el-button-group>
-            </div>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
-      <el-divider><span style="color: #9c9c9c;">以下为已经过去时间的内容</span></el-divider>
+        <el-timeline>
+          <el-timeline-item v-for="(item, index) in futureList" :timestamp="item.memorandumTime" placement="top" type="primary" :key="index">
+            <el-card>
+              <div style="align-items: center;justify-content: space-between;display: flex">
+                <span style="white-space: pre-wrap">{{item.memorandumContent}}</span>
+                <el-button-group>
+                  <el-button type="primary" @click="clickUpdate(item)" icon="Edit">修改</el-button>
+                  <el-button type="primary" @click="clickDelete(item)" icon="Delete">删除</el-button>
+                </el-button-group>
+              </div>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
+        <el-divider><span style="color: #9c9c9c;">以下为已经过去时间的内容</span></el-divider>
 
-      <el-timeline>
-        <el-timeline-item v-for="(item, index) in pastList" :timestamp="item.memorandumTime" placement="top" type="primary" :key="index">
-          <el-card >
-            <div style="align-items: center;justify-content: space-between;display: flex">
-              <span style="white-space: pre-wrap">{{item.memorandumContent}}</span>
-              <el-button-group>
-                <el-button type="primary" @click="clickUpdate(item)" icon="Edit">修改</el-button>
-                <el-button type="primary" @click="clickDelete(item)" icon="Delete">删除</el-button>
-              </el-button-group>
-            </div>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
+        <el-timeline>
+          <el-timeline-item v-for="(item, index) in pastList" :timestamp="item.memorandumTime" placement="top" type="primary" :key="index">
+            <el-card >
+              <div style="align-items: center;justify-content: space-between;display: flex">
+                <span style="white-space: pre-wrap">{{item.memorandumContent}}</span>
+                <el-button-group>
+                  <el-button type="primary" @click="clickUpdate(item)" icon="Edit">修改</el-button>
+                  <el-button type="primary" @click="clickDelete(item)" icon="Delete">删除</el-button>
+                </el-button-group>
+              </div>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
     </el-card>
 
     <el-dialog v-model="showAdd" title="新增备忘录" >

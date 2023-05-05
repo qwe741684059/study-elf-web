@@ -5,18 +5,18 @@
         <sakura></sakura>
       </div>
       <el-aside width="300px">
-        <el-menu :default-active="index" background-color="#F5F5F5"  @select="onSelect">
+        <el-menu :default-active="index" background-color="rgba(10,10,0,0.05)"  @select="onSelect">
           <el-menu-item index="1">
-            <span>文档管理</span>
+            <span style="font-size: 16px">文档管理</span>
           </el-menu-item>
           <el-menu-item index="2">
-            <span>笔记管理</span>
+            <span style="font-size: 16px">笔记管理</span>
           </el-menu-item>
           <el-menu-item index="3">
-            <span>课程表</span>
+            <span style="font-size: 16px">课程表</span>
           </el-menu-item>
           <el-menu-item index="4">
-            <span>备忘录</span>
+            <span style="font-size: 16px">备忘录</span>
           </el-menu-item>
           <div class="placeholder"></div>
           <el-menu-item index="5">
@@ -395,7 +395,7 @@ export default {
   width: 385px;
   left: 30%;
   top: 200px;
-  background-color: #eeeeee;
+  background-color: rgba(200,0,0,0.03);
 }
 .login-form-button {
   position: relative;

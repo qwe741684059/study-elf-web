@@ -10,6 +10,7 @@ import Vditor from "vditor";
 import 'vditor/dist/index.css'
 import {selectMarkdownByMarkdownId, updateMarkdown} from "@/api/markdown";
 import { ElNotification } from 'element-plus'
+import {getToken} from "@/utils/auth";
 export default {
   name: "markdownViewer",
   data() {
@@ -97,6 +98,29 @@ export default {
                 'preview',
               ],
             }],
+          upload: {
+            url: 'http://localhost:8181/markdown/uploadImage',
+            multiple: false,
+            fieldName: 'file',
+            headers: {
+              Authorization: getToken()
+            },
+            format(files, responseText) {
+              let baseUrl ='http://localhost:8181/avatar/'
+              let path = baseUrl + responseText.replace(/\"/g, "")
+              console.log(path)
+              return JSON.stringify({
+                msg: '',
+                code: 200,
+                data: {
+                  errFiles: [],
+                  succMap: {
+                    [responseText]:path
+                  }
+                }
+              })
+            }
+          }
         })
       },100))
       // _this.markdown.markdownId = args[1]

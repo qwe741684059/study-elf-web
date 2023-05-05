@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas ref="canvas_sakura" id="canvas_sakura"></canvas>
+    <canvas ref="canvas_sakura" id="canvas_sakura" class="sakura-background"></canvas>
   </div>
 </template>
 <script>
@@ -212,5 +212,7 @@ export default {
 };
 </script>
 <style scoped>
-
+ .sakura-background{
+   background-color: rgba(255,0,0,0.02);
+ }
 </style>
