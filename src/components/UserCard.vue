@@ -56,7 +56,10 @@ import {mapState} from "vuex";
 export default {
   name: "UserCard",
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user']),
+  },
+  props: {
+    token:{}
   },
 
   created() {

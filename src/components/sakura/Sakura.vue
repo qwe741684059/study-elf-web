@@ -198,7 +198,7 @@ export default {
         sakuraList.push(sakura);
       }
       let stop = requestAnimationFrame(function f() {
-        // console.log("111");
+
         cxt.clearRect(0, 0, canvas.width, canvas.height);
         // 修改樱花位置逻辑
         sakuraList.update();

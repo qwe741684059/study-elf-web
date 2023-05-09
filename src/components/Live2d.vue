@@ -30,8 +30,6 @@ export default {
       let configPath = window.ipcRenderer.sendSync('getModelPath')
       let data = fs.readFileSync(configPath)
       data = JSON.parse(data)
-      console.log(data.path)
-      console.log(data.scale)
 
       this.app = new PIXI.Application({
         view: document.getElementById('canvas'),

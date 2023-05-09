@@ -43,7 +43,7 @@
         </el-breadcrumb>
       </template>
       <el-descriptions  :column="6" style="margin-top: 20px" >
-        <el-descriptions-item v-for="(file, index) in fileList" :key="index"  :span="1" align="left" style="height: 100px">
+        <el-descriptions-item v-for="(file, index) in fileList" :key="index"  :span="1" align="left" style="height: 100px" width="190">
           <div style="display: inline-flex;flex-direction: column; align-items: center;width: 150px;height: 100px;" class="myFile" :tabindex="index"  @keyup.delete="deleteHandle(file)">
             <el-icon  size="30" @dblclick="dbClick(file)">
               <svg v-if="file.fileType === 'fileFolder'" t="1682143232707" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1244" width="200" height="200"><path d="M918.673 883H104.327C82.578 883 65 867.368 65 848.027V276.973C65 257.632 82.578 242 104.327 242h814.346C940.422 242 958 257.632 958 276.973v571.054C958 867.28 940.323 883 918.673 883z" fill="#FFE9B4" p-id="1245"></path><path d="M512 411H65V210.37C65 188.597 82.598 171 104.371 171h305.92c17.4 0 32.71 11.334 37.681 28.036L512 411z" fill="#FFB02C" p-id="1246"></path><path d="M918.673 883H104.327C82.578 883 65 865.42 65 843.668V335.332C65 313.58 82.578 296 104.327 296h814.346C940.422 296 958 313.58 958 335.332v508.336C958 865.32 940.323 883 918.673 883z" fill="#FFCA28" p-id="1247"></path></svg>
@@ -179,11 +179,19 @@ export default {
       }
       addFile(file).then(function (resp) {
         _this.addFileFolderDialogVisible = false
+        ElMessage({
+          type: 'success',
+          message: '成功',
+        })
         _this.getFileList()
       })
     },
     handleFileSuccess() {
       this.getFileList()
+      ElMessage({
+        type: 'success',
+        message: '成功',
+      })
     },
     beforeFileUpload(data) {
 

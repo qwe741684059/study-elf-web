@@ -1,4 +1,4 @@
-// 定义樱花, idx 是修改添加的
+
 export const SakuraUtil = function(x, y, s, r, fn, idx) {
     this.x = x;
     this.y = y;

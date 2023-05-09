@@ -88,6 +88,7 @@
                       :on-success="handleAvatarSuccess"
                       :before-upload="beforeAvatarUpload"
                       :headers="headers"
+                      accept=".jpg,.jpeg,.png"
                   >
                     <el-avatar v-if="imageUrl" :src="imageUrl" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon">修改头像</el-icon>
@@ -127,11 +128,11 @@
           <div class="login-form-wrapper">
             <el-form  ref="loginForm" :model="loginForm" :rules="rules" label-position="left" label-width="0px" class="login-form">
               <p class="login-form-title">Study-Elf 登录</p>
-              <el-form-item prop="username" class="login-form-input">
+              <el-form-item prop="username" class="login-form-input" >
                 <el-input v-model="loginForm.username" placeholder="账号"></el-input>
               </el-form-item>
               <el-form-item prop="password" class="login-form-input">
-                <el-input v-model="loginForm.password" placeholder="密码" type="password" show-password></el-input>
+                <el-input v-model="loginForm.password" placeholder="密码" type="password"></el-input>
               </el-form-item>
               <el-form-item class="login-form-button">
                 <el-button @click="isRegister = true" type="info">注册</el-button>
@@ -163,8 +164,6 @@
         </template>
       </el-dialog>
     </el-container>
-
-
   </div>
 </template>
 
@@ -176,18 +175,17 @@ import {getToken} from "@/utils/auth";
 import {mapGetters, mapState} from "vuex";
 import {register, updateUser} from "@/api/user";
 import Cookies from "js-cookie";
-import UserCard from "@/components/UserCard";
 import store from "@/store";
 import MarkdownList from "@/components/MarkdownList";
 import Memorandum from "@/components/Memorandum";
 import {getTimeList} from "@/api/memorandum";
 import Sakura from "@/components/sakura/Sakura";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "MainControl",
   inject:['reload'],
   components:{
-    UserCard,
     TimeTables,
     FileList,
     MarkdownList,
@@ -212,8 +210,8 @@ export default {
         password: '',
       },
       rules: {
-        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
+        username: [{ required: true, min:6, max: 15, trigger: 'blur', message: '用户名应为6-15位' }],
+        password: [{ required: true, min:6, max: 18, trigger: 'blur', message: '密码应为6-18位' }],
       },
       loading:false,
 
@@ -288,15 +286,17 @@ export default {
       const _this = this
       this.handleLogin()
     },
-    handleLogin() {
+    async handleLogin() {
       const _this = this
       this.loading = true
-      _this.$store.dispatch('Login', this.loginForm).then((resp) => {
+      await _this.$store.dispatch('Login', this.loginForm).then((resp) => {
         Cookies.set('username', this.loginForm.username, { expires: Config.tokenCookieExpires })
         Cookies.set('password', this.loginForm.password, { expires: Config.tokenCookieExpires })
         _this.loading = false
         console.log("进入login方法")
         if (getToken()) {
+          _this.headers.Authorization = getToken()
+          _this.loginForm = {}
           console.log("login完成：获得token")
           store.dispatch('GetInfo')
         }
@@ -312,7 +312,14 @@ export default {
         password: _this.registerForm.password
       }
       register(user).then(function (resp) {
-        _this.isRegister = false
+        if (resp.status === 200) {
+          ElMessage({
+            type: 'success',
+            message: '注册成功',
+          })
+          _this.isRegister = false
+          _this.registerForm = {}
+        }
       })
     },
     handleAvatarSuccess(res, file) {
@@ -335,6 +342,7 @@ export default {
     onLogOut() {
       const _this = this
       this.$store.dispatch('LogOut').then(function (resp) {
+        _this.imageUrl = ''
         console.log("登出后的token："+getToken())
       })
     },
